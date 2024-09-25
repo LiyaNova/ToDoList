@@ -28,7 +28,7 @@ final class CoreDataManager {
         return container
     }()
     
-    private func saveContext () {
+    func saveContext () {
         if viewContext.hasChanges {
             do {
                 try viewContext.save()
