@@ -7,28 +7,35 @@
     
 import UIKit
 
+protocol CoordinatorProtocol: AnyObject {
+    var navigationController: UINavigationController { get set }
+    
+    func start()
+    func openNewItemScreen()
+}
+
 final class ApplicationCoordinator: CoordinatorProtocol {
-    private let window: UIWindow
-    private var itemListViewController: ItemListViewController?
+    var navigationController: UINavigationController
+    
     private var itemListViewModel: ItemListViewModelProtocol?
     
-    init(window: UIWindow) {
-        self.window = window
+    init(navigationController: UINavigationController) {
+        self.navigationController = navigationController
     }
     
     func start() {
-        let itemListViewModel = ItemListViewModel()
+        let itemListViewModel = ItemListViewModel(coordinator: self)
         self.itemListViewModel = itemListViewModel
-        itemListViewController = ItemListViewController(viewModel: itemListViewModel)
         
-        window.rootViewController = itemListViewController
-        window.makeKeyAndVisible()
-        
-        bindNavigationEvents()
+        let itemListViewController = ItemListViewController(viewModel: itemListViewModel)
+        navigationController.pushViewController(itemListViewController, animated: true)
     }
     
-    private func bindNavigationEvents() {
-        //TODO
+    func openNewItemScreen() {
+        guard let itemListViewModel else { return }
+        
+        let vc = NewItemViewController(viewModel: itemListViewModel)
+        navigationController.pushViewController(vc, animated: true)
     }
 }
 

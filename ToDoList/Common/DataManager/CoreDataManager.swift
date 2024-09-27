@@ -41,8 +41,9 @@ final class CoreDataManager {
     }
 }
 
+//MARK: - CRUD
 extension CoreDataManager {
-    func createEntity<T: NSManagedObject>(_ type: T.Type, configure: (T) -> Void) -> T {
+    func create<T: NSManagedObject>(_ type: T.Type, configure: (T) -> Void) -> T {
         let entityName = String(describing: type)
         let entity = NSEntityDescription.insertNewObject(forEntityName: entityName, into: viewContext) as! T
         configure(entity)
@@ -51,7 +52,7 @@ extension CoreDataManager {
         return entity
     }
     
-    func fetchEntities<T: NSManagedObject>(_ type: T.Type, predicate: NSPredicate? = nil, sortDescriptors: [NSSortDescriptor]? = nil) -> [T] {
+    func read<T: NSManagedObject>(_ type: T.Type, predicate: NSPredicate? = nil, sortDescriptors: [NSSortDescriptor]? = nil) -> [T] {
         let entityName = String(describing: type)
         let fetchRequest = NSFetchRequest<T>(entityName: entityName)
         fetchRequest.predicate = predicate
@@ -66,12 +67,12 @@ extension CoreDataManager {
         }
     }
     
-    func updateEntity<T: NSManagedObject>(_ entity: T, configure: (T) -> Void) {
+    func update<T: NSManagedObject>(_ entity: T, configure: (T) -> Void) {
         configure(entity)
         saveContext()
     }
     
-    func deleteEntity(_ entity: NSManagedObject) {
+    func delete(_ entity: NSManagedObject) {
         viewContext.delete(entity)
         saveContext()
     }
